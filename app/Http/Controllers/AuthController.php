@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -23,29 +24,32 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register()
+    public function register(RegisterRequest $request)
     {
-        $credentials = request(['name', 'email', 'password']);
+        // Define validation rules
+        $validated = $request->validated();
 
-        $user = User::create(
-            [
-                'name' => $credentials['name'],
-                'email' => $credentials['email'],
-                'password' => bcrypt($credentials['password']),
-            ],
-        );
+        // Create a new user with the validated data
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+        ]);
 
-        if ($token = auth()->attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
+        // Attempt to authenticate and get the token
+        if ($token = auth()->attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             return $this->respondWithToken($token);
         } else {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user
-        ], 201);
+        // Optionally, remove this return statement as it is unreachable
+        // return response()->json([
+        //     'message' => 'User successfully registered',
+        //     'user' => $user
+        // ], 201);
     }
+
 
     /**
      * Get a JWT via given credentials.
