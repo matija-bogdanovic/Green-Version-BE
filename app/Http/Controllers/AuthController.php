@@ -34,7 +34,8 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
-        ]);
+        ])->sendEmailVerificationNotification();
+        
 
         // Attempt to authenticate and get the token
         if ($token = auth()->attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
@@ -113,5 +114,10 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             // 'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+    public function destroy()
+    {
+       auth()->user()->delete();
+       return response()->json(['message' => 'Successfully deleted']);
     }
 }
