@@ -37,6 +37,7 @@ class AuthController extends Controller
             'password' => bcrypt($validated['password']),
         ])->sendEmailVerificationNotification();
 
+
         // Attempt to authenticate and get the token
         if ($token = auth()->attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             return $this->respondWithToken($token);
