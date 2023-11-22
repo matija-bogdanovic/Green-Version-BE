@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Auth::routes([
-    'verify' =>true
-]);
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('www.google.com');
+})->middleware(['auth', 'signed'])->name('verification.verify');

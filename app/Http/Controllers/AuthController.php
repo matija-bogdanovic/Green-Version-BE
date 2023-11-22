@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
 {
@@ -34,7 +35,7 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
-        ]);
+        ])->sendEmailVerificationNotification();
 
         // Attempt to authenticate and get the token
         if ($token = auth()->attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
@@ -110,6 +111,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'access_token' => $token,
+            'user' => auth()->user(),
             'token_type' => 'bearer',
             // 'expires_in' => auth()->factory()->getTTL() * 60
         ]);
