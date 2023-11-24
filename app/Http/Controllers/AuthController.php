@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateUserDataRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Request;
 
@@ -67,6 +68,26 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(UpdateUserDataRequest $request)
+    {
+        $validated = $request->validated();
+
+        $user = User::findOrFail(auth()->user()->id);
+        if (isset($validated['name'])) {
+            $user->name = $validated['name'];
+        }
+        if (isset($validated['email'])) {
+            $user->email = $validated['email'];
+        }
+        $user->save();
+        return $user;
     }
 
     /**
