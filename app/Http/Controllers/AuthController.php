@@ -8,7 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Request;
 
-class AuthController extends Controller
+class AuthController extends Controller 
 {
     /**
      * Create a new AuthController instance.
