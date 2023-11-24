@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateUserDataRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Request;
 
-class AuthController extends Controller
+class AuthController extends Controller 
 {
     /**
      * Create a new AuthController instance.
