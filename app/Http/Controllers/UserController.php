@@ -46,6 +46,9 @@ class UserController extends Controller
         if (isset($validated['email'])) {
             $user->email = $validated['email'];
         }
+        if (isset($validated['profile_photo'])) {
+            $user->profile_photo = $validated['profile_photo'];
+        }
         $user->save();
         return $user;
     }

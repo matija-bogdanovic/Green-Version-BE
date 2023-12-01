@@ -14,11 +14,11 @@ class ImageController extends Controller
             'image' => 'required|image|max:2048', // ograničite veličinu i tip fajla
         ]);
 
-        $user = auth()->user();
+        // $user = auth()->user();
         $path = $request->file('image')->store('images', 'public');
 
-        $user->profile_photo = $path;
-        $user->save();
+        // $user->profile_photo = $path;
+        // $user->save();
 
         return response()->json(['message' => 'Slika uspešno uploadovana', 'path' => $path]);
     }

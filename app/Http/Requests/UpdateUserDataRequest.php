@@ -14,6 +14,7 @@ class UpdateUserDataRequest extends AbstractRequest
         return [
             'name' => 'nullable|string|between:6,100',
             'email' => 'nullable|string|email|max:100|unique:users',
+            'profile_photo' => 'nullable|string',
         ];
     }
 }

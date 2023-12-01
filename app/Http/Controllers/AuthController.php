@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateUserDataRequest;
 use App\Models\User;
 use App\Models\UserSettings;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -31,10 +32,16 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
+        $imageContent = file_get_contents('https://eu.ui-avatars.com/api/?background=FFFCF9&color=1C1C1C&size=200&name=' . $validated['name']);
+
+        $fileName = 'images/' . uniqid() . '.png';
+        Storage::disk('public')->put($fileName, $imageContent);
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
+            'profile_photo' => $fileName
         ]);
 
         $userSettings = new UserSettings();
@@ -66,7 +73,8 @@ class AuthController extends Controller
 
         $user->markEmailAsVerified();
 
-        return response()->json(['message' => 'Email successfully verified']); // TODO: Redirektuj
+        return redirect(config('app.url') . '/login');
+        // return response()->json(['message' => config('app.url') . '/login']); // TODO: Redirektuj
     }
 
 
