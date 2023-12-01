@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateUserDataRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Request;
 
-class AuthController extends Controller 
+class AuthController extends Controller
 {
     /**
      * Create a new AuthController instance.
@@ -18,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'verify']]);
     }
 
     /**
@@ -28,29 +28,37 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        // Define validation rules
         $validated = $request->validated();
 
-        // Create a new user with the validated data
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
         ])->sendEmailVerificationNotification();
 
-
-        // Attempt to authenticate and get the token
         if ($token = auth()->attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             return $this->respondWithToken($token);
         } else {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+    }
 
-        // Optionally, remove this return statement as it is unreachable
-        // return response()->json([
-        //     'message' => 'User successfully registered',
-        //     'user' => $user
-        // ], 201);
+    public function verify(Request $request, string $id, string $hash)
+    {
+        $userId = $id;
+        $user = User::findOrFail($userId);
+
+        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            return response()->json(['error' => 'Invalid verification link'], 401);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Email already verified'], 401);
+        }
+
+        $user->markEmailAsVerified();
+
+        return response()->json(['message' => 'Email successfully verified']); // TODO: Redirektuj
     }
 
 
@@ -67,28 +75,18 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $user = auth()->user();
+
+        // Proveravamo da li je e-mail korisnika verifikovan
+        if (!$user->hasVerifiedEmail()) {
+            // Ako e-mail nije verifikovan, vraćamo grešku
+            return response()->json(['error' => 'Your email address is not verified.'], 401);
+        }
+
+        // Ako je sve u redu, vraćamo token
         return $this->respondWithToken($token);
     }
 
-    /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(UpdateUserDataRequest $request)
-    {
-        $validated = $request->validated();
-
-        $user = User::findOrFail(auth()->user()->id);
-        if (isset($validated['name'])) {
-            $user->name = $validated['name'];
-        }
-        if (isset($validated['email'])) {
-            $user->email = $validated['email'];
-        }
-        $user->save();
-        return $user;
-    }
 
     /**
      * Get the authenticated User.
