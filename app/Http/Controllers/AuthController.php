@@ -35,7 +35,14 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
-        ])->sendEmailVerificationNotification();
+        ]);
+
+        $userSettings = new UserSettings();
+        $userSettings->user_id = $user->id;
+        // Set any default settings or additional properties here
+        $userSettings->save();
+
+        $user->sendEmailVerificationNotification();
 
         if ($token = auth()->attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             return $this->respondWithToken($token);

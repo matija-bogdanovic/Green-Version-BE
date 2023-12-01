@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,8 +16,8 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 |
 */
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
+// Route::get('/', [AuthController::class, 'verify']);
 
-    return redirect('www.google.com');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verification.verify');
+
+Route::get('/user/{id}/image', [ImageController::class, 'getUserImage']);

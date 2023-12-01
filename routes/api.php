@@ -1,38 +1,27 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-
-Route::get('email/verify/{id}', [AuthController::class, 'verify'])->name('verification.verify'); // Make sure to keep this as your route name
 
 Route::get('email/resend', [AuthController::class, 'resend'])->name('verification.resend');
 
-
 Route::group([
-
     'middleware' => 'api',
     'prefix' => 'auth'
-
 ], function ($router) {
-
     Route::post('register', [AuthController::class, 'register'])->name('register');
-    Route::patch('user', [AuthController::class, 'update']);
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
-    // Route::post('refresh', [AuthController::class, 'refresh']);
+});
+
+Route::group([
+    'middleware' => 'api',
+], function ($router) {
+    Route::patch('user', [UserController::class, 'update']);
     Route::post('me', [AuthController::class, 'me']);
-    Route::delete('delete', [AuthController::class, 'destroy']);
+    Route::delete('user', [UserController::class, 'destroy']);
+
+    Route::post('user/image', [ImageController::class, 'upload']);
 });
