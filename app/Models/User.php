@@ -14,6 +14,8 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $with = ['settings'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -44,6 +46,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function settings()
+    {
+        return $this->hasOne(UserSettings::class);
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
