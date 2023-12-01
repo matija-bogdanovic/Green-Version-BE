@@ -7,9 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateUserDataRequest;
 use App\Models\User;
+use App\Models\UserSettings;
 use Illuminate\Support\Facades\Request;
 
-class AuthController extends Controller 
+class AuthController extends Controller
 {
     /**
      * Create a new AuthController instance.
@@ -108,6 +109,13 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function updateSettings()
+    {
+        $settings = UserSettings::where('user_id', auth()->user()->id)->first();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
