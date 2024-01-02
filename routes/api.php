@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -25,3 +27,6 @@ Route::group([
 
     Route::post('user/image', [ImageController::class, 'upload']);
 });
+
+Route::get('category', [CategoryController::class, 'index']);
+Route::post('businesses/{categorySlug}', [BusinessController::class, 'getBusinessesByCategory']); //get all businesses by given category_id

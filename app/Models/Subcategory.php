@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Subcategory extends Model
 {
     use HasFactory;
+
+    public function businesses()
+    {
+        return $this->belongsToMany(Business::class, 'subcategory_business');
+    }
 }

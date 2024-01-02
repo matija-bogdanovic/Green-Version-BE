@@ -19,19 +19,29 @@ class UserSeeder extends Seeder
                 'name' => 'David Milenkovic',
                 'email' => 'david@mail.com',
                 'password' => bcrypt('Admin123!'),
-                'email_verified_at' => Carbon::now()
+                'email_verified_at' => Carbon::now(),
+                'type' => 'admin'
             ],
             [
                 'name' => 'Nikola Radojkovic',
                 'email' => 'kole@mail.com',
                 'password' => bcrypt('Admin123!'),
-                'email_verified_at' => Carbon::now()
+                'email_verified_at' => Carbon::now(),
+                'type' => 'basic'
             ],
             [
                 'name' => 'Danijel Radojkovic',
                 'email' => 'deni@mail.com',
                 'password' => bcrypt('Admin123!'),
-                'email_verified_at' => Carbon::now()
+                'email_verified_at' => Carbon::now(),
+                'type' => 'business'
+            ],
+            [
+                'name' => 'Matija Bogdanovic',
+                'email' => 'mata@mail.com',
+                'password' => bcrypt('Admin123!'),
+                'email_verified_at' => Carbon::now(),
+                'type' => 'business'
             ],
         ]);
     }

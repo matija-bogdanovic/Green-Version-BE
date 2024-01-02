@@ -88,7 +88,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'unauthorized'], 401);
         }
 
         $user = auth()->user();
@@ -96,7 +96,7 @@ class AuthController extends Controller
         // Proveravamo da li je e-mail korisnika verifikovan
         if (!$user->hasVerifiedEmail()) {
             // Ako e-mail nije verifikovan, vraćamo grešku
-            return response()->json(['error' => 'Your email address is not verified.'], 401);
+            return response()->json(['error' => 'email_not_verified'], 401);
         }
 
         // Ako je sve u redu, vraćamo token
@@ -123,14 +123,14 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'successfully_logged_out']);
     }
 
     public function updateSettings()
     {
         $settings = UserSettings::where('user_id', auth()->user()->id)->first();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'successfully_updated_settings']);
     }
 
     /**
